@@ -1,0 +1,24 @@
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, val=0, next=None):
+#         self.val = val
+#         self.next = next
+
+class Solution:
+    def hasCycle(self, head: Optional[ListNode]) -> bool:
+
+        # use fast and slow for sure
+        fast = slow = head
+
+        while fast and slow:
+            if not fast.next:
+                break
+                
+            fast = fast.next.next
+            slow = slow.next
+
+            if fast == slow:
+                return True
+
+        return False
+        

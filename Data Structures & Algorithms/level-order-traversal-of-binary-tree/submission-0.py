@@ -4,35 +4,53 @@
 #         self.val = val
 #         self.left = left
 #         self.right = right
-from collections import deque
 
 class Solution:
     def levelOrder(self, root: Optional[TreeNode]) -> List[List[int]]:
-        # we can do bfs with a deque and append the levels to a output_arr
-        output_arr = []
 
-        # deque = root
-        queue = deque([root])
+        # I think we need breadth first here. Start from top and make an array and add shit from that level
+        # When we move to the next level, we make a new array and append items within that level
+        # Rinse and repeat
 
-        # while deque:
-        while queue:
-            # sub_arr = []
-            # for node in deque:
-            sub_arr = []
-            for i in range(len(queue)):
-                # deque.popleft()
-                node = queue.popleft()
-                # if node:
-                if node:
-                    # deque.append(node.left)
-                    # deque.append(node.right)
-                    queue.append(node.left)
-                    queue.append(node.right)
-                    sub_arr.append(node.val)
+        # One thing to be aware of is that we might have to think of levels a little diff, as in to get everyone in a level
+        # we would need to go to the parent and append its kids, and to get to the next level we'd have to go back up and then back right
+        # I don't think we need recursion here tbh. I think we can do a queue approach with levels
 
-            # output_arr.append(sub_arr)
-            output_arr.append(sub_arr) if sub_arr else None
+        final_arr = []
+        first_queue = [root]
+        second_queue = []
+
+
+        # I'm thinking of doing two queues. First and second queue
+        # Basically start with the root in first queue. Add first queue's values to final. Iterate 
+        # Add the children to second queue. Add him to final_arr
+        # First queue = second queue and second queue = [] once iteration is over
+
+        # WE STORE VALUES NOT NODES
+        if not root:
+            return final_arr
+
+        while len(first_queue) > 0:
+            append_list = []
+            for node in first_queue:
+                append_list.append(node.val)
                 
-        # return output_arr
-        return output_arr
+                if node.left:
+                    second_queue.append(node.left)
+
+                if node.right:
+                    second_queue.append(node.right) 
+            
+            final_arr.append(append_list)
+            first_queue = second_queue
+            second_queue = []
+        
+        return final_arr
+
+
+
+
+        
+
+        
         

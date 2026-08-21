@@ -6,40 +6,24 @@
 #         self.right = right
 
 class Solution:   
+    def isSubtree(self, root: Optional[TreeNode], subRoot: Optional[TreeNode]) -> bool:
+        
+        # Basically make a function that checks if both trees are currently the same thru dfs
+        # Can return true if we good
+        # Otherwise we just keep going and calling it but we move the og tree left and right
+       
+        if not root:
+            return False
 
-    def isSubtree(self, root: Optional[TreeNode], subRoot: Optional[TreeNode]) -> bool: 
-        self.is_subtree = False
-
-        # Approach
-        # Have subfunction that checks isSameTree of two nodes
-        # returns either True or False
         def isSameTree(node1, node2):
-            if not node1 and not node2:
+            # Do full recursive dfs search here
+            if (not node1 and not node2):
                 return True
 
-            if not node1 or not node2: #if one reached end but not other
+            if (not node1 and node2) or (not node2 and node1) or (node1.val != node2.val):
                 return False
-
-            if node1.val != node2.val:
-                return False
-
-            left_tree = isSameTree(node1.left,node2.left)
-            right_tree = isSameTree(node1.right,node2.right)
-
-            return left_tree and right_tree
-
-        # from isSubtree we call that func with current root and subRoot
-        same_tree = isSameTree(root,subRoot)
-        if same_tree:
-            return True
-        
-        # At this point if root is null then subRoot CANT be null (otherwise same_tree would be True)
-        left_search = self.isSubtree(root.left, subRoot) if root else False
-        right_search = self.isSubtree(root.right, subRoot) if root else False
-        
-        return left_search or right_search
+            
+            return isSameTree(node1.left,node2.left) and isSameTree(node1.right,node2.right)
 
 
-
-
-        
+        return (root.val == subRoot.val and isSameTree(root,subRoot)) or (self.isSubtree(root.left,subRoot)) or (self.isSubtree(root.right,subRoot))

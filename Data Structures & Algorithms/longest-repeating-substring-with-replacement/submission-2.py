@@ -1,33 +1,50 @@
 class Solution:
     def characterReplacement(self, s: str, k: int) -> int:
-        # Only have to deal with uppercase letters
-        # keep in mind the sliding approach where you decrease left until valid
-        max_len = 0
-        most_freq = 0 
-        left, right = 0, 0
-        # Keep a dictionary or bucket of unique characters?? and we can update it as we slide (dict[char] +=1 or -=1)
-        freq_dict = {}
+        # Maybe we can use k as the width of the sliding window??
 
-        # maybe we keep track of most_freq char (the string) and each time we move right we check if the window length - freq of most frequent is bigger than k. If so we cooked and we move left --> Make this check every time we hit the loop
-        # "AABCBA" k = 2
+        # Some Notes:
+         # We can create a dict that tracks how much of each char we have
+         # Then basically we will consumne all of our replacements (k) with the most frequent char
+         # This is where sliding window begins --> How?
+
+        # Sliding attempt 1:
+        # Start left and right at the beginning
+        # Keep moving right forward until we get an instance of the thing
+        # Make left and right 
+
+        char_map = {}
+
+        #for char in s:
+        #    char_map[char] = 1 + char_map.get(char,0)
+
+        left = 0
+        right = 0
+        max_count = 0
+
         while right < len(s):
 
-            # update char's count
-            freq_dict[s[right]] = freq_dict.get(s[right],0) + 1
+            char_map[s[right]] = 1 + char_map.get(s[right], 0)
+            # len(substring) is just equal to right - left
+            #eqn is : len(substring) - most_freq_char <= k --> basically if all chars are the same, then we have 0 <= k and no need to replace
+            # if we reach a point where the above statement is NOT true then we simply shift left to the right by one and recalculate
 
-            # check that char at right has higher freq than most_freq. If so update
-            if freq_dict.get(s[right]) > most_freq:
-                most_freq = freq_dict[s[right]]
+            sub_length = right - left + 1
+            most_freq_char = char_map[max(char_map, key= lambda p: char_map.get(p))]
+            
+            new_longest = most_freq_char + k # + k is very important here
 
-            # if window length - freq of most freq is bigger than k
-            if (right - left + 1) - most_freq > k:
-                # move left forward once and update (-1) the char
-                freq_dict[s[left]] -= 1
+            if new_longest > max_count: # Basically if the most frequent showup plus the replacements we can make are more than last time
+                max_count = new_longest 
+
+            if sub_length - most_freq_char > k: # If we need to replace more characters than we are able to
+                char_map[s[left]] = char_map.get(s[left]) - 1
                 left += 1
                 
-        
-            max_len = max(max_len, right - left + 1)
+            
             right += 1
+        
+        return min(max_count,len(s))
+                 
 
-        return max_len
+
         

@@ -1,36 +1,37 @@
 class Solution:
     def checkInclusion(self, s1: str, s2: str) -> bool:
-        # check until the counts are equal in s1 and the window of s2
-        # otherwise return false. Also this forces the window size to be len(s1)
 
-        left = 0
-        freq_dict = {}
-        s1_dict = {}
+        # Alright as we can see s1 will be smaller than or equal to s2 in length
+        # We can maybe check for a window of size s1? And what I'm thinking is to store each char in s1 and their freqs
+        # Then we work with the window in s2 always moving forward
+
+        # I could've technically used hashmaps too here
+        s1_arr = [0] * 26
+        s2_arr = [0] * 26
 
         for char in s1:
-            s1_dict[char] = s1_dict.get(char, 0) + 1
+            index = ord(char) - ord('a')
+            s1_arr[index] += 1
 
-        for right in range(len(s2)): # right is the moving index
+        left = 0
+        right = 0
 
-            # update freq dict of new guy
-            freq_dict[s2[right]] = freq_dict.get(s2[right],0) + 1
+        while right < len(s2):
 
-            # if window size is too small then just continue to next iteration
-            if right - left + 1 < len(s1):
-                continue
+            new_char_idx = ord(s2[right]) - ord('a')
+            s2_arr[new_char_idx] += 1
 
-            # otherwise we just check that the dictionaries are the same
-            if s1_dict == freq_dict:
+            if s1_arr == s2_arr:
                 return True
+            
+            right += 1
 
-            # if not then move left forward and update len
-            freq_dict[s2[left]] -=1
-            if freq_dict[s2[left]] == 0:
-                freq_dict.pop(s2[left])
-            left += 1 
+            if right - left == len(s1): # If we reached the point where window is of size s1 then we keep fixed size
+                remove_idx = ord(s2[left]) - ord('a')
+                s2_arr[remove_idx] -= 1
+                left += 1
+        
         
         return False
-            
-            
-
+        
         

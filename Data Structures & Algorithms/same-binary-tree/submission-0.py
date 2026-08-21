@@ -7,25 +7,31 @@
 
 class Solution:
     def isSameTree(self, p: Optional[TreeNode], q: Optional[TreeNode]) -> bool:
-        # what do two trees need to be considered the same tree:
-        # exact same structure (for each node, is its .left and .right the same as the other tree's corresponding node)
-        # exact same values (then nodes must have the same .val ints)
 
-        # base case when we hit none (both effectively same tree)
-        if not p and not q:
-            return True
-        
-        if (p and not q) or (q and not p):
-            return False
+        # I'm thinking of basically doing a search on each node at the same time by checking if their values equate
+        # Then recursively do the same with the left and right nodes
+        # Have a isSameTree variable that is initially True
+        # Can make a nested func to make it cleaner
 
-        # recursive step of checking if val is same
-        if p.val != q.val:
-            return False    
+        isSameTree = True
 
-        # the idea is that we call "isSameTree" on all the nodes and consider even the leafs of both trees as trees themselves. If at any point there is a discrepency we return False
-        left_trees = self.isSameTree(p.left, q.left)
-        right_trees = self.isSameTree(p.right, q.right)
+        def checkNodes(node1, node2):
 
-        return left_trees and right_trees # both need to be true
-        
+            nonlocal isSameTree
 
+            if not node1 and not node2:
+                return
+            
+            # If one is null but other isn't then they're automatically unequal
+            elif (not node1 and node2) or (not node2 and node1) or (node1.val != node2.val):
+                isSameTree = False
+                return 
+            
+            checkNodes(node1.left,node2.left)
+            checkNodes(node1.right,node2.right)
+
+        checkNodes(p,q)
+        return isSameTree
+            
+            
+            

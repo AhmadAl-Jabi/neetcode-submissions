@@ -1,24 +1,14 @@
 class Solution:
     def topKFrequent(self, nums: List[int], k: int) -> List[int]:
+        #Aytt we just got two more cmon now
 
-        # A better approach is bucket sort based on the max number
-
-        frequency_dict = {}
+        freq_map = {}
 
         for num in nums:
+            freq_map[num] = 1 + freq_map.get(num,0)
 
-            if num not in frequency_dict:
-                frequency_dict[num] = 0
-            
-            frequency_dict[num] += 1
-        
-        sorted_pairs = sorted(
-            frequency_dict.items(),
-            key = lambda pair: pair[1],
-            reverse=True
-        )
-        
-        output_arr = [key for key, value in sorted_pairs[:k]]
-        return output_arr
+        #values_arr = list(freq_map.values())
+        #key_arr = list(freq_map.keys())
 
-        
+        sorted_keys = [key for key,val in sorted(freq_map.items(),key=lambda p:p[1], reverse=True)][:k]
+        return(sorted_keys)

@@ -1,28 +1,41 @@
 class Solution:
     def maxAreaOfIsland(self, grid: List[List[int]]) -> int:
-        self.max_area = 0
-        # The approach I'm thinking is very similar to counting islands except now we'll have a nonlocal max_area that we check curr_area against for each node
-        def dfs(row,col):
-            if row < 0 or col < 0 or row >= len(grid) or col >= len(grid[0]):
-                return 0 # count of a null node is 0
-            
-            if grid[row][col] == 0:
-                return 0 # count of a 0 is 0
-            
-            # set the curr node to a zero BEFORE traversing to avoid inf loop
-            grid[row][col] = 0
-            # 1 + the amount of all neighbours (1 is the curr node)
-            curr_count = 1 + dfs(row + 1,col) + dfs(row - 1,col) + dfs(row,col + 1) + dfs(row,col -1)
+        # Basically the difference here is that when we loop over the 4 diff directions
+        # Each one should return a 1 if it hit an island and a 0 if it didn't
+        # If none hit an island we just return whatever the curr counter was
+        # If a call hits a ground, it sets that ground to 0 (so we don't duplicate count)
 
-            self.max_area = max(curr_count,self.max_area)
-            return curr_count
+        # If curr is ground, we set count = 1 and then we do count + dfs(dir) for each dir
+        # And after the for loop we just return count as a whole. This worksf or dfs since we build up the counter till the end
+
+        rows = len(grid) 
+        cols = len(grid[0]) 
+
+        directions = [[0,1], [0,-1], [1,0], [-1,0]]
+
+        def dfs(r, c):
+            if ((r<0) or (c<0) or (r>=rows) or (c>=cols) or grid[r][c] == 0):
+                return 0
+
+            grid[r][c] = 0
+            count = 1
+
+            for dirs in directions:
+                count += dfs(r + dirs[0], c + dirs[1])
+
+            return count
         
-        for row in range(len(grid)):
-            for col in range(len(grid[0])):
-                if grid[row][col]: # if 1 evaluates to true 
-                    dfs(row,col)
+        max_count = 0
+
+        for i in range(rows):
+            for j in range(cols):
+
+                if grid[i][j] == 1:
                     
-        return self.max_area
-
-
+                    curr_count = dfs(i,j)
+                    if curr_count > max_count:
+                        max_count = curr_count
+        
+        return max_count
+                    
         

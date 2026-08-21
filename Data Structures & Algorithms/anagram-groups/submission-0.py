@@ -1,26 +1,43 @@
 class Solution:
     def groupAnagrams(self, strs: List[str]) -> List[List[str]]:
-        #Make a hashmap but have the keys as the 26 size array 
-        #Anytime we encounter a string that fits a preexisting key, append to its array
-        #in the end we just combine all the arrays into a bigger one
 
-        anagrams_out = []
-        group_anagrams = {}
+        #1: create a SET that stores dicts of each string, by idx, the dicts map the number of each char in the string
 
-        for i, x in enumerate(strs):
-            # create size 26 empty key (we check later if already in dict)
-            candidate_arr = [0]*26
+        #2: from that SET we take out subgroups of dicts that are equal to each other and store their matching strings 
+        #in their own arrays (by index)
 
-            for char in x:
-                candidate_arr[ord(char) - ord('a')] += 1
+        #3: combine all the string subgroup arrays in a bigger array
 
-            key_candidate = tuple(candidate_arr) # needs to be a tuple to be a key
-            if key_candidate in group_anagrams:
-                group_anagrams[key_candidate].append(x)
+        sorted_array = []
+        stored_dicts = {}
+
+        for i in range(len(strs)):
+            # Map freq of letters using array of size 26
+            my_arr = [0] * 26
+
+            for char in strs[i]:
+                # We use ascii of 'a' to be the reference 0 (max is z which is 25)
+                index = ord(char) - ord('a')
+                my_arr[index] += 1
             
+            my_tuple = tuple(my_arr)
+
+            if my_tuple not in stored_dicts:
+                #In the dictionary we directly store the string as the value to the dict key
+                stored_dicts[my_tuple] = [strs[i]]
+
             else:
-                group_anagrams[key_candidate] = [x]
+                #If the dict is already there, we just add the string to the array value
+                stored_dicts[my_tuple].append(strs[i])
+        
+        for key in stored_dicts:
+            sorted_array.append(stored_dicts[key])
+        
+        return sorted_array
 
-        anagrams_out = list(group_anagrams.values())
+        
 
-        return(anagrams_out)
+
+
+
+        

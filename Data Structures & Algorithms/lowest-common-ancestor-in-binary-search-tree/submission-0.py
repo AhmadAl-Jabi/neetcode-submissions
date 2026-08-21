@@ -7,23 +7,25 @@
 
 class Solution:
     def lowestCommonAncestor(self, root: TreeNode, p: TreeNode, q: TreeNode) -> TreeNode:
-        # root = 5, p = 1, q = 4
-        #  5
-        # 3  8
-        #1 4 7 9
-        #2
-        if not root:
-            return none
-        
-        if root.val > p.val and root.val > q.val:
-            return self.lowestCommonAncestor(root.left,p,q)
 
-        elif root.val < p.val and root.val < q.val:
-            return self.lowestCommonAncestor(root.right,p,q)
+        # In order to find a descendant we can use the fact that its a bst and only need to make one move at each depth
+        # If child bigger than curr node, go right
+        # If child smaller than, go left
+
+        # We do NOT need to worry about whether or not the nodes exist. We take that for granted
+        # So it's really a matter of ending the function at the latest possible node we can
+
+        # We go until we reach a point where there is a divergence. One node is smaller than the parent, the other is bigger
+        # This tells us that we cannot possibly go further as this is the last parent of both
+
+        while  (root.val > max(p.val,q.val)) or (root.val < min(p.val,q.val)):
+
+            if root.val > max(p.val,q.val):
+                root = root.left
+            
+            else:
+                root = root.right
         
         return root
 
-        # Basically check at current root if both p and q are either bigger or smaller than root --> If so then traverse left or right (respectively)
-
-        # else this is the lowest common ancestor and we can return it
         

@@ -7,21 +7,24 @@
 
 class Solution:
     def isValidBST(self, root: Optional[TreeNode]) -> bool:
-        # We never deal with none nodes (since root isn't none)
 
-        # We'll need to send a range of allowed values each call (min,max) that starts -inf,+inf --> when we move left we update right side of range to be root.val -1, when move right we update left side for range to be root.val + 1
-        def checkBST(node, range):
-            # just check curr node is in correct range --> if not return False
-            if node.val > range[1] or node.val < range[0]:
+        #Simple
+        # define a nested dfs func, create the recursive logic and base cases
+        # pass lows and highs to enforce allowed values (based on the parent node)
+        # call this func and just return its output
+
+        def dfs(node, low, high):
+
+            if not node:
+                return True
+            
+            if not (low < node.val < high):
                 return False
             
-            # We say else True since if we have no kids by default its a valid BST
-            left_tree = checkBST(node.left,[range[0],node.val - 1]) if node.left else True
-            right_tree = checkBST(node.right,[node.val + 1, range[1]]) if node.right else True
-
-            return left_tree and right_tree
+            # The bounds low and high are EXCLUSIVE. So NOT <= or >=. 
+            left = dfs(node.left, low, node.val)
+            right = dfs(node.right, node.val, high)
+            return (left and right)
         
-        return checkBST(root,[float("-inf"),float("inf")])
-
-        
+        return dfs(root, -1000, 1000)
         

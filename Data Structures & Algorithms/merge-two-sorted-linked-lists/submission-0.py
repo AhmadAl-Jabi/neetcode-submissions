@@ -7,40 +7,41 @@
 class Solution:
     def mergeTwoLists(self, list1: Optional[ListNode], list2: Optional[ListNode]) -> Optional[ListNode]:
 
-        # So the way to merge is set the next of one guy to the other node
-        # but we need a way to maintain the older heads when segmented (can store in a var)
-        # [1,10,11], [2,3,5,7]
-        if not list1:
-            return list2
-        
-        if not list2:
-            return list1
+        # We start the pointers at the head of the two linked lists
+        # Compare the two curr nodes, if curr_1 < curr_2 then 
 
-        if list1.val < list2.val:
-            head = curr = list1
-            list1 = list1.next
-        
-        else:
-            head = curr = list2
-            list2 = list2.next
+        prev = None
+        head = None
 
         while list1 and list2:
 
-            # if list 1 smaller make curr point at that, advance list 1
-            if list1.val < list2.val:
-                curr.next = list1
+            if list1.val <= list2.val:
+                node = list1 # Store the node we want to become the new prev
                 list1 = list1.next
-
-            # else make curr point at list 2 and advance list 2
+            
             else:
-                curr.next = list2
+                node = list2
                 list2 = list2.next
+            
+            if prev is None:
+                prev = node
+                head = prev # Store the head of the pointer which we'll return later
+            
+            else:
+                prev.next = node
+                prev = prev.next
 
-            # advance curr regardless
-            curr = curr.next
+        if not list1: # If list1 is empty at the end then append the rest of list2 --> Be careful with none pointers
+            if prev:
+                prev.next = list2
+            else:
+                head = list2
 
-        # one list will end before the other, so make curr.next whatever is left
-        curr.next = list1 or list2    
+        if not list2: # Likewise
+            if prev:
+                prev.next = list1
+            else:
+                head = list1
+        
         return head
-
         

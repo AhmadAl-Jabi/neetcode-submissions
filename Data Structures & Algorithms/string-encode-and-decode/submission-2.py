@@ -1,41 +1,59 @@
 class Solution:
 
     def encode(self, strs: List[str]) -> str:
+        # Need a delimiter and the length of each string
 
-        #I'm thinking we paste the string and then its length at the end
-        #But we need a way to know if it's the length or if the string originally had the number
-        #If we just prefix every single string with a number and then a random character
-        #We can know exactly how many to read after the character (if it's just number then it's vague if 5 or 53 e.g.)
-        encoded_str = ""
+        encoded = ""
 
-        for string in strs:
-            encoded_str += (str(len(string)) + "*" + string)
+        for item in strs:
+            # example: "3#cat4#cars"
+            encoded += str(len(item)) + "#" + item
         
-        return encoded_str
+        return(encoded)
 
     def decode(self, s: str) -> List[str]:
-        decoded_arr = []
 
-        # ex: "5*hello2*OK"
+        new_arr = []
 
-        i, j = 0, 0
+        # We'll probably need an i and j, where one is at the beginning of new word and the other is at the end, and then 
+        # we make one equal the other at the end and move forward. i can be at the beginning
+
+        # Here we don't know in advance how long to loop so resort to while loop
+
+        #So plan is that one pointer walks till it sees a # --> Thinking it should be i?
+        #Then we store s[pointer -1] and know the length
+        #Then the other pointer tps to the pointer and it walks that far (+1 cuz of slicing)
+        #Rinse and repeat until we reach the end of the string basically
+
+        # ex: "1000#bob20000#$#@$12#Jim"
+
+        i = 0
+        j = 0
 
         while i < len(s):
-            # when j reaches * we basically take the number from [i:j]
-            while s[j] != "*":
+            
+            while s[j] != "#":
                 j += 1
             
-            
-            num = int(s[i:j])
-            print(num)
+            leng = int(s[i:j])
+            i = j + leng + 1
+            new_arr.append(s[j+1:i])
+            j=i
 
-            decoded_arr.append(s[j+1: j + 1 + num])
+            '''
+            if (s[i]) == "#":
+                # Store the number before the "#"
+                leng = int(s[i-1])
 
-            # set i to the end of the string
-            i = j + num + 1
-            j = j + num + 1
-        
-        return decoded_arr
+                j = i + 1
 
+                for _ in range(leng):
+                    j += 1
+                
+                new_arr.append(s[i + 1:j])
 
+            i += 1
+            '''
+
+        return new_arr
 

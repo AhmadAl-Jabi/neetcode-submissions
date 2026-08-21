@@ -1,41 +1,37 @@
 class Solution:
 
     def encode(self, strs: List[str]) -> str:
+        # Need a delimiter and the length of each string
 
-        #I'm thinking we paste the string and then its length at the end
-        #But we need a way to know if it's the length or if the string originally had the number
-        #If we just prefix every single string with a number and then a random character
-        #We can know exactly how many to read after the character (if it's just number then it's vague if 5 or 53 e.g.)
-        encoded_str = ""
+        encoded = ""
 
-        for string in strs:
-            encoded_str += (str(len(string)) + "*" + string)
+        for item in strs:
+            # example: "3#cat4#cars"
+            encoded += str(len(item)) + "#" + item
         
-        return encoded_str
+        return(encoded)
 
     def decode(self, s: str) -> List[str]:
-        decoded_arr = []
 
-        # ex: "5*hello2*OK"
+        new_arr = []
 
-        i, j = 0, 0
+        # Honestly not that bad but you need to view the problem with a certain perspective
+        # Basically think that you should start at the beginning (which will be a number) and keep walking
+        # Until you hit a "#". That now signifies the end of the number. Now take the entire string after the sharp of length number
+        # Shift your pointers to the end of the string you just took. Rinse and repeat
+        
+        i = 0
+        j = 0
 
-        while j < len(s):
-            # when j reaches * we basically take the number from [i:j]
-            while s[j] != "*":
+        while i < len(s):
+            
+            while s[j] != "#":
                 j += 1
             
-            
-            num = int(s[i:j])
-            print(num)
+            leng = int(s[i:j])
+            i = j + leng + 1
+            new_arr.append(s[j+1:i])
+            j=i
 
-            decoded_arr.append(s[j+1: j + 1 + num])
-
-            # set i to the end of the string
-            i = j + num + 1
-            j = j + num + 1
-        
-        return decoded_arr
-
-
+        return new_arr
 

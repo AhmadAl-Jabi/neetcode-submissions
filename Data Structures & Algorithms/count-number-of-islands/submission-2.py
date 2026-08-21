@@ -1,34 +1,26 @@
 class Solution:
     def numIslands(self, grid: List[List[str]]) -> int:
-        # basically if there is no immediate land left/right or above/below a land then it would count as an island
-        self.islands_seen = 0
-        rows, cols = len(grid), len(grid[0])
-
-        def dfs(i, j):
-        # we can maybe use a dfs nested func here --> all it does is explore all adjacent nodes (i,j pairs), when it sees 0 returns, or is out of bounds returns, and otherwise when it sees 1 it'll set it as 0 and do dfs on everything near it
-            if i < 0 or i >= len(grid) or j >= len(grid[0]) or j < 0:
+        s= len(grid) 
+        cs = len(grid[0]) 
+        directions = [[0,1],[1,0],[-1,0],[0,-1]] 
+        islands = 0
+        
+        def dfs(r,c): 
+            if ((r<0) or (c>=cs) or (r>=s) or (c<0) or (grid[r][c] == "0") ):
                 return 
-            
-            if grid[i][j] == "0":
-                return 
-            
-            # Otherwise if what we saw is a 1 set to 0 explore all its neighbors
-            grid[i][j] = "0"
-            dfs(i + 1,j)
-            dfs(i,j + 1)
-            dfs(i - 1,j)
-            dfs(i,j - 1)
 
-        # then the way we call that dfs function would be on all rows and colums and only when curr is 1. If so, increase "self.total_islands" += 1 and then run dfs on the node
-        for row in range(rows):
-            for col in range(cols):
-                # if we see a 0 then we don't do anything
-                if grid[row][col] == "1":
-                    self.islands_seen += 1
-                    dfs(row, col)
+            if grid[r][c] == "1":
+                grid[r][c] = "0"
+                
+                for dir in directions:
+                    dfs(r + dir[0], c + dir[1])
+            return 
         
-        return self.islands_seen
+        # To make it more optimal we can even just do dfs when it's a 1 at curr pos, but regardless it's fine cuz we return right away if 0
+        for i in range(s):
+            for j in range(cs):
+                if grid[i][j] == "1":
+                    dfs(i,j) 
+                    islands += 1
         
-
-
-        
+        return islands
